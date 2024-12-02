@@ -10,7 +10,8 @@ uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 if uploaded_file is not None:
     try:
         # Leer el archivo CSV con encoding manejado
-        df = pd.read_csv(uploaded_file, sep=';', header=None)
+        df = pd.read_csv(uploaded_file, sep=';', encoding='utf-8')
+
     except UnicodeDecodeError:
         # Intentar con otro encoding en caso de error
         try:
@@ -18,6 +19,9 @@ if uploaded_file is not None:
         except Exception as e:
             st.error(f"No se pudo leer el archivo CSV: {e}")
             st.stop()
+
+    # Mostrar las columnas detectadas
+    st.write("Columnas detectadas:", list(df.columns))
 
     # Limpiar encabezados eliminando espacios en blanco
     df.columns = df.columns.str.strip()
