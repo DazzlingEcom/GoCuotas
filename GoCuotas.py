@@ -3,15 +3,14 @@ import pandas as pd
 
 # Título de la aplicación
 st.title("Procesador de CSV - Filtrado y Cálculo con GOcuotas")
-st.write("Columnas detectadas:", list(df.columns))
+
 # Subida del archivo CSV
 uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 
 if uploaded_file is not None:
     try:
         # Leer el archivo CSV con encoding manejado
-        df = pd.read_csv(uploaded_file, encoding='utf-8', sep=None, engine='python')
-
+        df = pd.read_csv(uploaded_file, sep=';', header=None)
     except UnicodeDecodeError:
         # Intentar con otro encoding en caso de error
         try:
