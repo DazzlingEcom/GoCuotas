@@ -8,8 +8,17 @@ st.title("Procesador de CSV - Filtrado y Cálculo con GOcuotas")
 uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 
 if uploaded_file is not None:
-    # Leer el archivo CSV
-    df = pd.read_csv(uploaded_file, sep=';')
+    try:
+        # Leer el archivo CSV con encoding manejado
+        df = pd.read_csv(uploaded_file, sep=';', encoding='utf-8')
+
+    except UnicodeDecodeError:
+        # Intentar con otro encoding en caso de error
+        try:
+            df = pd.read_csv(uploaded_file, sep=';', encoding='latin1')
+        except Exception as e:
+            st.error(f"No se pudo leer el archivo CSV: {e}")
+            st.stop()
 
     # Verificar si las columnas requeridas existen
     required_columns = ["Medio de pago", "Total", "Fecha"]
