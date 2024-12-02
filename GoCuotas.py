@@ -3,7 +3,7 @@ import pandas as pd
 
 # Título de la aplicación
 st.title("Procesador de CSV - Filtrado y Cálculo con GOcuotas")
-
+st.write("Columnas detectadas:", list(df.columns))
 # Subida del archivo CSV
 uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 
