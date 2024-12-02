@@ -20,10 +20,14 @@ if uploaded_file is not None:
             st.error(f"No se pudo leer el archivo CSV: {e}")
             st.stop()
 
+    # Limpiar encabezados eliminando espacios en blanco
+    df.columns = df.columns.str.strip()
+
     # Verificar si las columnas requeridas existen
     required_columns = ["Medio de pago", "Total", "Fecha"]
-    if not all(col in df.columns for col in required_columns):
-        st.error(f"El archivo CSV debe contener las columnas: {', '.join(required_columns)}")
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        st.error(f"Faltan las siguientes columnas requeridas en el archivo CSV: {', '.join(missing_columns)}")
     else:
         # Filtrar filas donde "Medio de pago" contenga "GOcuotas"
         filtered_df = df[df["Medio de pago"].str.contains("GOcuotas", na=False)]
