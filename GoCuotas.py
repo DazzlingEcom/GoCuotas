@@ -10,7 +10,7 @@ uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 if uploaded_file is not None:
     try:
         # Leer el archivo CSV con encoding manejado
-        df = pd.read_csv(uploaded_file, sep=';', encoding='utf-8')
+        df = pd.read_csv(uploaded_file, encoding='utf-8', sep=None, engine='python')
 
     except UnicodeDecodeError:
         # Intentar con otro encoding en caso de error
