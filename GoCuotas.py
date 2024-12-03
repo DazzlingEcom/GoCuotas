@@ -9,7 +9,7 @@ uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 
 if uploaded_file is not None:
     try:
-        # Leer el archivo CSV con el separador correcto y manejo de comillas
+        # Leer el archivo CSV con el separador y manejo de comillas
         df = pd.read_csv(uploaded_file, sep=';', quotechar='"', encoding='utf-8')
     except UnicodeDecodeError:
         # Intentar con otro encoding en caso de error
@@ -19,15 +19,14 @@ if uploaded_file is not None:
             st.error(f"No se pudo leer el archivo CSV: {e}")
             st.stop()
 
-    # Mostrar columnas detectadas y vista previa
-    st.write("Columnas detectadas en el archivo:", list(df.columns))
-    st.write("Vista previa del archivo CSV:")
-    st.dataframe(df.head())
-
-    # Solicitar al usuario que asocie las columnas manualmente
-    medio_pago_col = st.selectbox("Selecciona la columna para 'Medio de pago'", options=df.columns)
-    total_col = st.selectbox("Selecciona la columna para 'Total'", options=df.columns)
-    fecha_col = st.selectbox("Selecciona la columna para 'Fecha'", options=df.columns)
+    # Asegurarnos de que las columnas necesarias existen
+    try:
+        fecha_col = df.columns[3]
+        total_col = df.columns[11]
+        medio_pago_col = df.columns[26]
+    except IndexError:
+        st.error("El archivo no tiene suficientes columnas para procesar.")
+        st.stop()
 
     try:
         # Filtrar filas donde la columna 'Medio de pago' contenga 'GOcuotas'
