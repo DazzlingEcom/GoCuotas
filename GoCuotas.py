@@ -10,23 +10,20 @@ uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 if uploaded_file is not None:
     try:
         # Leer el archivo CSV con encoding manejado
-        df = pd.read_csv(uploaded_file, sep=';', encoding='utf-8')
+        df = pd.read_csv(uploaded_file, sep='\t', encoding='utf-8', header=None)  # Asumimos separador tab
     except UnicodeDecodeError:
         # Intentar con otro encoding en caso de error
         try:
-            df = pd.read_csv(uploaded_file, sep=';', encoding='latin1')
+            df = pd.read_csv(uploaded_file, sep='\t', encoding='latin1', header=None)
         except Exception as e:
             st.error(f"No se pudo leer el archivo CSV: {e}")
             st.stop()
 
-    # Mostrar columnas detectadas
-    st.write("Columnas detectadas en el archivo:", list(df.columns))
-
-    # Mostrar las primeras filas para inspeccionar su contenido
+    # Mostrar columnas detectadas y vista previa
     st.write("Vista previa del archivo CSV:")
     st.dataframe(df.head())
 
-    # Solicitar al usuario que asocie las columnas manualmente si no se detectan correctamente
+    # Solicitar al usuario que asocie las columnas manualmente
     medio_pago_col = st.selectbox("Selecciona la columna para 'Medio de pago'", options=df.columns)
     total_col = st.selectbox("Selecciona la columna para 'Total'", options=df.columns)
     fecha_col = st.selectbox("Selecciona la columna para 'Fecha'", options=df.columns)
@@ -40,7 +37,7 @@ if uploaded_file is not None:
         filtered_df["Total con Descuento"] = filtered_df[total_col] * (1 - 0.087)
 
         # Convertir la columna 'Fecha' a formato datetime
-        filtered_df[fecha_col] = pd.to_datetime(filtered_df[fecha_col], errors="coerce", format='%d-%m-%Y')
+        filtered_df[fecha_col] = pd.to_datetime(filtered_df[fecha_col], errors="coerce", format='%d/%m/%Y')
 
         # Agrupar por fecha y sumar los valores de 'Total con Descuento'
         grouped_df = filtered_df.groupby(filtered_df[fecha_col].dt.date)["Total con Descuento"].sum().reset_index()
