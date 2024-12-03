@@ -9,17 +9,18 @@ uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 
 if uploaded_file is not None:
     try:
-        # Leer el archivo CSV con encoding manejado
-        df = pd.read_csv(uploaded_file, sep='\t', encoding='utf-8', header=None)  # Asumimos separador tab
+        # Leer el archivo CSV con el separador correcto y manejo de comillas
+        df = pd.read_csv(uploaded_file, sep=';', quotechar='"', encoding='utf-8')
     except UnicodeDecodeError:
         # Intentar con otro encoding en caso de error
         try:
-            df = pd.read_csv(uploaded_file, sep='\t', encoding='latin1', header=None)
+            df = pd.read_csv(uploaded_file, sep=';', quotechar='"', encoding='latin1')
         except Exception as e:
             st.error(f"No se pudo leer el archivo CSV: {e}")
             st.stop()
 
     # Mostrar columnas detectadas y vista previa
+    st.write("Columnas detectadas en el archivo:", list(df.columns))
     st.write("Vista previa del archivo CSV:")
     st.dataframe(df.head())
 
